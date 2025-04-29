@@ -1,0 +1,26 @@
+import java.util.Scanner;
+
+public class Zdravo {
+    public static void main(String[] args) {
+
+        Scanner input = new Scanner(System.in);
+
+        System.out.println("Vnesi broj");
+        Integer number = input.nextInt();
+
+        input.nextLine();  // Ова го "чисти" баферот од новиот ред
+
+        System.out.println("Vnesi niza");
+        String value = input.nextLine();
+
+        System.out.println("Vnese broj "+number);
+        System.out.println("Vnese niza "+value);
+
+        input.close();
+
+
+        // int number = 5; примитивна променлива
+        // Integer number = 5;  Ова е објект тип
+
+    }
+}
