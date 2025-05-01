@@ -1,0 +1,30 @@
+import java.util.Scanner;
+
+// Пресметај ја сумата на првите N прости броеви
+
+public class Main {
+    public static void main(String[] args) {
+
+        Scanner sc = new Scanner(System.in);
+        int limit = sc.nextInt();
+        int sum = 0;
+        
+        for (int i = 1; i < limit; i++) {
+            boolean isPrime = true;         // претпоставуваме дека е прост
+            for (int j = 2; j < i; j++) {
+
+                if (i % j == 0) {   // дали го дели друг број освен 1
+                    isPrime = false;    // ако го дели, значи не е прост
+                }
+            }
+
+            if (isPrime) {
+                sum += i;   // ако остане Prime, го собираме во сума
+            }
+
+        }
+        System.out.print("Sumata na prvite " + limit + " broja e: " + sum);
+
+
+    }
+}
