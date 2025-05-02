@@ -1,0 +1,251 @@
+import java.util.Scanner;
+
+// Нека се дадени две еднострано поврзани
+//листи чии јазли се сортирани во растечки
+//редослед. Да се напише функција која ќе ги
+//спои двете листи во една така што
+//резултантната листа да е сортирана.
+//Сортирањето е подредување со слевање.
+
+class SLLNode<E> {
+    protected E element;
+    protected SLLNode<E> succ;  // point to the next node -> each node knows who the one to the right is
+
+    public SLLNode(E elem, SLLNode<E> succ) {
+        this.element = elem;
+        this.succ = succ;
+    }
+}
+
+class SLL<E> {
+    private SLLNode<E> first;   // only keeps the first node, since each knows who the next to it is
+
+    public SLL() {
+        // Construct an empty SLL
+        this.first = null;
+    }
+
+    public void deleteList() {
+        first = null;
+    }
+
+    public int size() {
+        int listSize = 0;
+        SLLNode<E> tmp = first;
+        while (tmp != null) {    // if the list is not empty, until there is a succ node
+            listSize++;
+            tmp = tmp.succ; // move to the right
+        }
+        return listSize;
+    }
+
+    // some implementation for printing
+    @Override
+    public String toString() {
+        String ret = new String();
+        if (first != null) {
+            SLLNode<E> tmp = first;
+            ret += tmp.element;
+            while (tmp.succ != null) {
+                tmp = tmp.succ;
+                ret += "->" + tmp.element;
+            }
+        } else
+            ret = "Prazna lista!!!";
+        return ret;
+    }
+
+
+    public void insertFirst(E o) {
+        SLLNode<E> ins = new SLLNode<E>(o, null);
+        ins.succ = first;
+        //SLLNode<E> ins = new SLLNode<E>(o, first); it should be before the previous first node
+        first = ins; //if there was no node in the list, than this will be the only one pointing to the null
+    }
+
+    public void insertAfter(E o, SLLNode<E> node) {
+        if (node != null) {
+            SLLNode<E> ins = new SLLNode<E>(o, node.succ);  // new node points to the successor of node
+            node.succ = ins; // the succ of node becomes the node we insert
+        } else {
+            System.out.println("Dadenot jazol e null");
+        }
+    }
+
+    public void insertBefore(E o, SLLNode<E> before) {
+
+        if (first != null) {
+            SLLNode<E> tmp = first;
+            if (first == before) {
+                this.insertFirst(o);
+                return;
+            }
+            //ako first!=before
+            while (tmp.succ != before && tmp.succ != null)
+                tmp = tmp.succ;
+
+            // i come up to the node that is left to before -- tmp
+            // i insert my new node that has a succ before
+            // and the succ to tmp should become the nex inserted node
+            if (tmp.succ == before) {
+                tmp.succ = new SLLNode<E>(o, before);
+                ;
+            } else {
+                System.out.println("Elementot ne postoi vo listata");
+            }
+        } else {
+            System.out.println("Listata e prazna");
+        }
+    }
+
+    public void insertLast(E o) {
+        if (first != null) {
+            SLLNode<E> tmp = first;
+            while (tmp.succ != null)
+                tmp = tmp.succ;
+            // i go to the last node, and make its succ to be the node I insert
+            // this node has no succ (last one)
+            tmp.succ = new SLLNode<E>(o, null);
+        } else {
+            insertFirst(o);
+        }
+    }
+
+    public E deleteFirst() {
+        if (first != null) {
+            SLLNode<E> tmp = first;
+            first = first.succ;
+            return tmp.element;
+        } else {
+            System.out.println("Listata e prazna");
+            return null;
+        }
+    }
+
+    public E delete(SLLNode<E> node) {
+        if (first != null) {
+            SLLNode<E> tmp = first;
+            if (first == node) {
+                return this.deleteFirst();
+            }
+            while (tmp.succ != node && tmp.succ.succ != null)
+                tmp = tmp.succ;
+            if (tmp.succ == node) {
+                tmp.succ = tmp.succ.succ;
+                return node.element;
+            } else {
+                System.out.println("Elementot ne postoi vo listata");
+                return null;
+            }
+        } else {
+            System.out.println("Listata e prazna");
+            return null;
+        }
+
+    }
+
+    public SLLNode<E> getFirst() {
+        return first;
+    }
+
+    public SLLNode<E> find(E o) {
+        if (first != null) {
+            SLLNode<E> tmp = first;
+            while (!tmp.element.equals(o) && tmp.succ != null)
+                tmp = tmp.succ;
+            if (tmp.element.equals(o)) {
+                return tmp;
+            } else {
+                System.out.println("Elementot ne postoi vo listata");
+            }
+        } else {
+            System.out.println("Listata e prazna");
+        }
+        return null;
+    }
+
+    public void merge(SLL<E> in) {
+        if (first != null) {
+            SLLNode<E> tmp = first;
+            while (tmp.succ != null)
+                tmp = tmp.succ;
+            tmp.succ = in.getFirst();
+        } else {
+            first = in.getFirst();
+        }
+    }
+
+    // method that returns the mirror of the list, i.e it flips all pointers
+    public void mirror() {
+        if (first != null) {
+            //m=nextsucc, p=tmp,q=next
+            SLLNode<E> tmp = first;
+            SLLNode<E> newsucc = null;
+            SLLNode<E> next;
+
+            while (tmp != null) {
+                next = tmp.succ;
+                tmp.succ = newsucc;
+                newsucc = tmp;
+                tmp = next;
+            }
+            first = newsucc;
+        }
+    }
+}
+
+
+public class Main {
+
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        int n1 = sc.nextInt();
+        SLL<Integer> list1 = new SLL<>();
+        SLL<Integer> list2 = new SLL<>();
+
+        for (int i = 0; i < n1; i++) {
+            list1.insertLast(sc.nextInt());
+        }
+        int n2 = sc.nextInt();
+        for (int i = 0; i < n2; i++) {
+            list2.insertLast(sc.nextInt());
+        }
+
+        SLL<Integer> merged = mergeSortedLists(list1, list2);
+        System.out.print(merged);
+
+    }
+
+    public static SLL<Integer> mergeSortedLists(SLL<Integer> list1, SLL<Integer> list2) {
+        SLL<Integer> result = new SLL<>();
+        SLLNode<Integer> node1 = list1.getFirst();
+        SLLNode<Integer> node2 = list2.getFirst();
+
+        while (node1 != null && node2 != null) {
+            if (node1.element <= node2.element) {
+                result.insertLast(node1.element);
+                node1 = node1.succ;
+            } else {
+                result.insertLast(node2.element);
+                node2 = node2.succ;
+            }
+        }
+
+        while (node1 != null) {
+            result.insertLast(node1.element);
+            node1 = node1.succ;
+        }
+        while (node2 != null) {
+            result.insertLast(node2.element);
+            node2 = node2.succ;
+        }
+
+        return result;
+
+    }
+
+
+}
+
+
+// https://www.youtube.com/watch?v=BUKi8sMgKYQ 37' min
